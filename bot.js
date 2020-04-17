@@ -7,7 +7,7 @@ var adminprefix = "1"
   client.on('message', message => {
 if(message.author.bot) return;
 if(message.channel.type === 'dm') return;
-   if(message.content.startsWith("1" + 'bc')) {
+   if(message.content.startsWith("2" + 'bc')) {
        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
      let filter = m => m.author.id === message.author.id;
  
