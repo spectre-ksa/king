@@ -15,19 +15,19 @@ if(message.channel.type === 'dm') return;
  .setTitle(`${client.user.username}`)
  .setDescription(`
  -=-=-=-=-=-=-=-=-=-=
- 🎖 Broadcast sends to a specific role without embed
+ 🎖 ارسال رسالة لرتبة محددة بدون امبد
  
- 🏅 Broadcast sends to a specific role with embed
+ 🏅 ارسال رسالة لرتبة محددة مع امبد
  
- 📭 Broadcast sends for all members with embed
+ 📭 ارسال رسالة للكل مع امبد
  
- 📧 Broadcast sends for all members without embed
+ 📧 ارسال رسالة للكل بدون امبد
  
- 🔵 Broadcast sends for online members only without embed
+ 🔵 ارسال رسالة للأونلاين بدون امبد
  
- 🔷 Broadcast sends for online members only with embed
+ 🔷 ارسال رسالة للأونلاين مع امبد
  
- ❌ To Cancel the process
+ ❌ الغاء هذه العملية
  -=-=-=-=-=-=-=-=-=-=
  `)
  
