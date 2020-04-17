@@ -1,56 +1,429 @@
-const Discord = require('discord.js');
+
+ const Discord = require('discord.js');
 const client = new Discord.Client();
-var adminprefix = "1"
-
-//bc
-const prefix = "1"
+var adminprefix = "“"
 
 
-
-client.on('message', message => {
-  if(message.content.startsWith(prefix + 'bc')) {
-            if (!message.member.hasPermission("ADMINISTRATOR"))  return;
-  let args = message.content.split(" ").slice(1).join(" ");
-  if(!args) return message.channel.send(`**:rolling_eyes: please type the broadcast message**`)
-  let filter = m => m.author.id == message.author.id
-  let broadcastt = new Discord.RichEmbed()
-  .setColor('#36393e')
-  .addField(`**[1] broadcast for all members\n\n[2] broadcast for online members\n\n[0] to cancel**`,`** **`)
-  message.channel.send(broadcastt).then(msg => {
-  message.channel.awaitMessages(filter, {
-    max: 1,
-    time: 90000,
-    errors: ['time']
-  })
-  .then(collected => {
-    if(collected.first().content === '1') {
-      message.channel.bulkDelete(1)
-  message.channel.send(`**Broadcast begin send to \`${message.guild.members.size}\` members....**`);
-  msg.delete()
-     return message.guild.members.forEach(m => {
-  m.send(args.replace('[user]', m))
-      })
-  }
-  if(collected.first().content === '2') {
-    msg.delete()
-    message.channel.bulkDelete(1)
-    message.channel.send(`**Broadcast begin send to \`${message.guild.members.filter(m=>m.presence.status == 'online').size}\` members....**`);
-  message.guild.members.filter(m => m.presence.status === 'online').forEach(m => {
-    m.send(args.replace('[user]', m)) 
-  })
-  message.guild.members.filter(m => m.presence.status === 'dnd').forEach(m => {
-    m.send(args.replace('[user]', m)) 
-  })
-  return message.guild.members.filter(m => m.presence.status === 'idle').forEach(m => {
-    m.send(args.replace('[user]', m)) 
-  })
-    }
-  if(collected.first().content === '0') {
-    message.channel.bulkDelete(1)
-    msg.delete()
-    return message.channel.send(`**Broadcast Has Been Canseled**`);
-  }})})}
-  });
+  client.on('message', message => {
+if(message.author.bot) return;
+if(message.channel.type === 'dm') return;
+   if(message.content.startsWith("“" + 'bc')) {
+       if (!message.member.hasPermission("ADMINISTRATOR"))  return;
+     let filter = m => m.author.id === message.author.id;
+ 
+ let recembed = new Discord.RichEmbed()
+ .setTitle(`${client.user.username}`)
+ .setDescription(`
+ -=-=-=-=-=-=-=-=-=-=
+ 🎖 Broadcast sends to a specific role without embed
+ 
+ 🏅 Broadcast sends to a specific role with embed
+ 
+ 📭 Broadcast sends for all members with embed
+ 
+ 📧 Broadcast sends for all members without embed
+ 
+ 🔵 Broadcast sends for online members only without embed
+ 
+ 🔷 Broadcast sends for online members only with embed
+ 
+ ❌ To Cancel the process
+ -=-=-=-=-=-=-=-=-=-=
+ `)
+ 
+ message.channel.sendEmbed(recembed).then(msg => {
+     msg.react('🎖')
+     .then(() => msg.react('🏅'))
+     .then(() => msg.react('📭'))
+     .then(() =>  msg.react('📧'))
+     .then(() => msg.react('🔵'))
+     .then(() => msg.react('🔷'))
+     .then(() => msg.react('❌'))
+ 
+ 
+             let embedmsgFilter = (reaction, user) => reaction.emoji.name === '📭' && user.id === message.author.id;
+ 
+             let normalmsgFilter = (reaction, user) => reaction.emoji.name === '📧' && user.id === message.author.id;
+ 
+             let cancelFilter = (reaction, user) => reaction.emoji.name === '❌' && user.id === message.author.id;
+ 
+             let onlyroleFilter = (reaction, user) => reaction.emoji.name === '🎖' && user.id === message.author.id;8
+ 
+             let onlineonlyFilter = (reaction, user) => reaction.emoji.name === '🔵' && user.id === message.author.id;8
+ 
+             let embedonlineonlyFilter = (reaction, user) => reaction.emoji.name === '🔷' && user.id === message.author.id;8
+ 
+             let embedonlyroleFilter = (reaction, user) => reaction.emoji.name === '🏅' && user.id === message.author.id;8
+ 
+             let embedmsg = msg.createReactionCollector(embedmsgFilter, { time: 0 });
+ 
+             let normalmsg = msg.createReactionCollector(normalmsgFilter, { time: 0 });
+     
+             let onlyrole = msg.createReactionCollector(onlyroleFilter, { time: 0 });
+ 
+             let embedonlyrole = msg.createReactionCollector(embedonlyroleFilter, { time: 0 });
+ 
+             let onlineonly = msg.createReactionCollector(onlineonlyFilter, { time: 0 });
+                 
+             let embedonlineonly = msg.createReactionCollector(embedonlineonlyFilter, { time: 0 });
+ 
+             let cancel = msg.createReactionCollector(cancelFilter, { time: 0 });
+ 
+ embedonlineonly.on('collect', r => {
+ 
+    let msge;
+    message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+   
+           message.channel.awaitMessages(filter, {
+             max: 1,
+             time: 90000,
+             errors: ['time']
+           })
+           .then(collected => {
+               collected.first().delete();
+               msge = collected.first().content;
+               msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+                 message.channel.awaitMessages(filter, {
+                   max: 1,
+                   time: 90000,
+                   errors: ['time']
+                 })
+                 .then(collected => {
+                   if(collected.first().content === 'yes') {
+   message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+   
+   
+   message.guild.members.filter(m => m.presence.status === 'online').forEach(m => {
+    var bc = new Discord.RichEmbed()
+           .setColor('RANDOM')
+           .setTitle(`📣 New Broadcast`)
+           .addField('🔰Server🔰', message.guild.name)
+           .addField('🚩Sender🚩', message.author.username)
+           .addField('📜Message📜', `${msge}`)
+           .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+           .setFooter(client.user.username, client.user.avatarURL);
+           m.send({ embed: bc })
+           m.send(`${m}`)
+           
+       })
+   }})
+   if(collected.first().content === 'no') {
+   message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+   message.guild.members.filter(m => m.presence.status === 'online').forEach(m => {
+    var bc = new Discord.RichEmbed()
+           .setColor('RANDOM')
+           .setTitle(`📣 New Broadcast`)
+           .addField('🔰Server🔰', message.guild.name)
+           .addField('🚩Sender🚩', message.author.username)
+           .addField('📜Message📜', `${msge}`)
+           .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+           .setFooter(client.user.username, client.user.avatarURL);
+           m.send({ embed: bc })
+           
+       })
+   }
+                 
+   })
+               })
+           })
+       })
+ 
+       
+ onlineonly.on('collect', r => {
+    let msge;
+    message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+ 
+        message.channel.awaitMessages(filter, {
+          max: 1,
+          time: 90000,
+          errors: ['time']
+        })
+        .then(collected => {
+            collected.first().delete();
+            msge = collected.first().content;
+            msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+              message.channel.awaitMessages(filter, {
+                max: 1,
+                time: 90000,
+                errors: ['time']
+              })
+              .then(collected => {
+ 
+                if(collected.first().content === 'yes') {
+message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+               
+ 
+message.guild.members.filter(m => m.presence.status === 'online').forEach(m => {
+    m.send(`${msge}`)
+m.send(`${m}`)      
+       
+    })
+}
+if(collected.first().content === 'no') {
+message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+message.guild.members.filter(m => m.presence.status === 'online').forEach(m => {
+    m.send(`${msge}`)
+               
+    })}
+})
+})
+        })
+    })
+})
+ 
+ embedmsg.on('collect', r => {
+     let msge;
+  message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+ 
+         message.channel.awaitMessages(filter, {
+           max: 1,
+           time: 90000,
+           errors: ['time']
+         })
+         .then(collected => {
+             collected.first().delete();
+             msge = collected.first().content;
+             msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+               message.channel.awaitMessages(filter, {
+                 max: 1,
+                 time: 90000,
+                 errors: ['time']
+               })
+               .then(collected => {
+                 if(collected.first().content === 'yes') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+ 
+ 
+     message.guild.members.forEach(m => {
+         var bc = new Discord.RichEmbed()
+         .setColor('RANDOM')
+         .setTitle(`📣 New Broadcast`)
+         .addField('🔰Server🔰', message.guild.name)
+         .addField('🚩Sender🚩', message.author.username)
+         .addField('📜Message📜', `${msge}`)
+         .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+         .setFooter(client.user.username, client.user.avatarURL);
+         m.send({ embed: bc })
+         m.send(`${m}`)
+         
+     })
+ }})
+ if(collected.first().content === 'no') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+     message.guild.members.forEach(m => {
+         var bc = new Discord.RichEmbed()
+         .setColor('RANDOM')
+         .setTitle(`📣 New Broadcast`)
+         .addField('🔰Server🔰', message.guild.name)
+         .addField('🚩Sender🚩', message.author.username)
+         .addField('📜Message📜', `${msge}`)
+         .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+         .setFooter(client.user.username, client.user.avatarURL);
+         m.send({ embed: bc })
+         
+     })
+ }
+               
+ })
+             })
+         })
+     })
+ 
+ 
+   
+ 
+ 
+ 
+ normalmsg.on('collect', r => {
+     let msge;
+     message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+ 
+         message.channel.awaitMessages(filter, {
+           max: 1,
+           time: 90000,
+           errors: ['time']
+         })
+         .then(collected => {
+             collected.first().delete();
+             msge = collected.first().content;
+             msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+               message.channel.awaitMessages(filter, {
+                 max: 1,
+                 time: 90000,
+                 errors: ['time']
+               })
+               .then(collected => {
+ 
+                 if(collected.first().content === 'yes') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+                 
+ 
+     message.guild.members.forEach(m => {
+ m.send(`${msge}`)
+ m.send(`${m}`)      
+         
+     })
+ }
+ if(collected.first().content === 'no') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+     message.guild.members.forEach(m => {
+         m.send(`${msge}`)
+                 
+     })}
+ })
+ })
+         })
+     })
+ })
+ 
+ onlyrole.on('collect', r => {
+     let msge;
+     let role;
+     message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+ 
+         message.channel.awaitMessages(filter, {
+           max: 1,
+           time: 90000,
+           errors: ['time']
+         })
+ 
+         .then(collected => {
+             collected.first().delete();
+             msge = collected.first().content;
+                 msg.edit('✅ **| Now Please Write The Role Name**').then(msg => {
+                 message.channel.awaitMessages(filter, {
+                     max: 1,
+                     time: 90000,
+                     errors: ['time']
+                   })
+         
+         .then(collected => {
+             collected.first().delete();
+             role = collected.first().content;
+                 let rolecheak = message.guild.roles.find('name', `${role}`)
+             msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+               message.channel.awaitMessages(filter, {
+                 max: 1,
+                 time: 90000,
+                 errors: ['time']
+               })
+               .then(collected => {
+ 
+                 if(collected.first().content === 'yes') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+                 
+ 
+             message.guild.members.filter(m => m.roles.get(rolecheak.id)).forEach(m => {
+ 
+ m.send(`${msge}`)
+ m.send(`${m}`)      
+         
+     })
+ }
+ if(collected.first().content === 'no') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+         message.guild.members.filter(m => m.roles.get(rolecheak.id)).forEach(m => {
+ 
+         m.send(`${msge}`)
+                 
+     })}
+ })
+ })
+         })
+     })
+ })
+ })
+ });
+ 
+ 
+ 
+ embedonlyrole.on('collect', r => {
+     let msge;
+     let role;
+     message.channel.send('📝 **| Please Write Now The Message To Send ✏ **').then(msg => {
+ 
+         message.channel.awaitMessages(filter, {
+           max: 1,
+           time: 90000,
+           errors: ['time']
+         })
+ 
+         .then(collected => {
+             collected.first().delete();
+             msge = collected.first().content;
+                 msg.edit('✅ **| Now Please Write The Role Name**').then(msg => {
+                 message.channel.awaitMessages(filter, {
+                     max: 1,
+                     time: 90000,
+                     errors: ['time']
+                   })
+         
+         .then(collected => {
+             collected.first().delete();
+             role = collected.first().content;
+                 let rolecheak = message.guild.roles.find('name', `${role}`)
+             msg.edit('✅ **| Do You Want A Mention In The Msg ? [yes OR no] **').then(msg => {
+               message.channel.awaitMessages(filter, {
+                 max: 1,
+                 time: 90000,
+                 errors: ['time']
+               })
+               .then(collected => {
+ 
+                 if(collected.first().content === 'yes') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+                 
+ 
+                     message.guild.members.filter(m => m.roles.get(rolecheak.id)).forEach(m => {
+                         var bc = new Discord.RichEmbed()
+         .setColor('RANDOM')
+         .setTitle(`📣 New Broadcast`)
+         .addField('🔰Server🔰', message.guild.name)
+         .addField('🚩Sender🚩', message.author.username)
+         .addField('📜Message📜', `${msge}`)
+         .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+         .setFooter(client.user.username, client.user.avatarURL);
+         m.send({ embed: bc })
+ m.send(`${m}`)      
+         
+     })
+ }
+ if(collected.first().content === 'no') {
+ message.channel.send(`**✅ The Message Has Been Sent The Members 📢**`);
+ message.guild.members.filter(m => m.roles.get(rolecheak.id)).forEach(m => {
+         var bc = new Discord.RichEmbed()
+         .setColor('RANDOM')
+         .setTitle(`📣 New Broadcast`)
+         .addField('🔰Server🔰', message.guild.name)
+         .addField('🚩Sender🚩', message.author.username)
+         .addField('📜Message📜', `${msge}`)
+         .setThumbnail('https://a.top4top.net/p_1008gqyyd1.png')
+         .setFooter(client.user.username, client.user.avatarURL);
+         m.send({ embed: bc })
+         
+                 
+     })}
+ })
+ })
+         })
+     })
+ })
+ })
+ })
+     cancel.on('collect', r => {
+         let cancelembed = new Discord.RichEmbed()
+         .setTitle('Successfully Canceled ❌')
+      message.channel.sendEmbed(cancelembed)
+         embedmsg.stop();
+         normalmsg.stop();
+         onlyrole.stop();
+         embedonlyrole.stop();
+         embedonlineonly.stop()
+         onlineonly.stop()
+         cancel.stop();
+     })
+ })
+    }});
 
 
 
