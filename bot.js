@@ -1,13 +1,13 @@
 
  const Discord = require('discord.js');
 const client = new Discord.Client();
-var adminprefix = "“"
+var adminprefix = "1"
 
 
   client.on('message', message => {
 if(message.author.bot) return;
 if(message.channel.type === 'dm') return;
-   if(message.content.startsWith("“" + 'bc')) {
+   if(message.content.startsWith("1" + 'bc')) {
        if (!message.member.hasPermission("ADMINISTRATOR"))  return;
      let filter = m => m.author.id === message.author.id;
  
